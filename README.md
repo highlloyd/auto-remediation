@@ -12,7 +12,8 @@ This project was developed by [Ronaldo Lauture](https://www.linkedin.com/in/rona
 
 ----
 ### Quick Start
-Install the prerequesites first and configure them.
+Install the prerequesites first and configure them. Alertmanager webhook will need to be configured to send http POST request to StackStorm.
+## For production please follow the HA guide from stackstorm
 ```sh
 git clone https://github.com/highlloyd/auto-remediation.git && cd auto-remediation/ | sh install.sh
 ```
@@ -39,12 +40,13 @@ An important part of any auto-remediation system is the monitoring stack, here w
   - container-exporter
   - grafana
   - Blackbox
+  
 ### 3.0 If this then that OPS
-Stackstorm ........
+StackStorm (aka "IFTTT for Ops") is event-driven automation for auto-remediation, security responses, troubleshooting, deployments, and more. Includes rules engine, workflow, 160 integration packs with 6000+ actions (see https://exchange.stackstorm.org) and ChatOps.
 
-- Components
-- ...
-- ...
 
 ### 4.0 Example
- 
+ For my fellowship I implemented :
+ - Disk space remeditation
+ - Down process remediation
+ - Complete instance shut down
