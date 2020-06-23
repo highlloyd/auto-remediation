@@ -1,0 +1,72 @@
+---
+version: '1.0'
+input:
+  - hostname
+  - directory
+  - file_extension
+  - threshold
+  - event_id
+  - check_name
+  - alert_message
+  - raw_payload
+tasks:
+  silence_check:
+    action: sensu.silence
+    input:
+      client: <% ctx().hostname %>
+      check: <% ctx().check_name %>
+    next:
+      - when: '{{ succeeded() }}'
+        do:
+          - check_dir_size
+      - when: '{{ failed() }}'
+        do:
+          - post_error_to_slack
+  check_dir_size:
+    action: st2_demos.check_dir_size
+    input:
+      hosts: <% ctx().hostname %>
+      directory: <% ctx().directory %>
+      threshold: <% ctx().threshold %>
+    next:
+      - when: '{{ succeeded() }}'
+        do:
+          - post_error_to_slack
+      - when: '{{ failed() }}'
+        do:
+          - remove_files
+  remove_files:
+    action: core.remote_sudo
+    input:
+      hosts: <% ctx().hostname %>
+      cmd: rm -Rfv <% ctx().directory %>/*<% ctx().file_extension %>
+    next:
+      - when: '{{ succeeded() }}'
+        do:
+          - validate_dir_size
+      - when: '{{ failed() }}'
+        do:
+          - post_error_to_slack
+  validate_dir_size:
+    action: st2_demos.check_dir_size
+    input:
+      hosts: <% ctx().hostname %>
+      directory: <% ctx().directory %>
+      threshold: <% ctx().threshold %>
+    next:
+      - when: '{{ succeeded() }}'
+        do:
+          - post_success_to_slack
+      - when: '{{ failed() }}'
+        do:
+          - post_error_to_slack
+  post_success_to_slack:
+    action: chatops.post_message
+    input:
+      channel: '#demos'
+      message: "DemoBot has pruned <% ctx().directory %> on <% ctx().hostname %> due to a monitoring event.  ID: <% ctx().event_id %>\nhttps://st2demo004/#/history/<% ctx().st2.action_execution_id %>/general"
+  post_error_to_slack:
+    action: chatops.post_message
+    input:
+      channel: '#demos'
+      message: "Something has gone wrong with DemoBot - check https://st2demo004/#/history/<% ctx().st2.action_execution_id %>/general"
