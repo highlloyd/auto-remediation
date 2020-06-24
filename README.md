@@ -12,8 +12,7 @@ This project was developed by [Ronaldo Lauture](https://www.linkedin.com/in/rona
 
 ----
 ### Quick Start
-Install the prerequesites first and configure them. Alertmanager webhook will need to be configured to send http POST request to StackStorm.
-## For production please follow the HA guide from stackstorm
+Install the prerequesites first and configure them. Alertmanager webhook will need to be configured to send http POST request to StackStorm. For production please follow the HA guide from stackstorm
 ```sh
 git clone https://github.com/highlloyd/auto-remediation.git && cd auto-remediation/ | sh install.sh
 ```
