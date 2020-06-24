@@ -1,0 +1,38 @@
+---
+name: diskspace_remediation
+runner_type: orquesta
+description: Remediation workflow for diskspace alerts
+enabled: true
+entry_point: workflows/diskspace_remediation.yaml
+parameters:
+  hostname:
+    type: string
+    description: Host to remediate disk space on
+    required: true
+  directory:
+    type: string
+    description: Directory to prune if over the threshold
+    required: true
+  file_extension:
+    type: string
+    description: file extension to be used during pruning
+    default: .log
+  threshold:
+    type: integer
+    description: threshold for check diskspace action. percentage
+    default: 50
+  check_name:
+    type: string
+    description: Check name as passed from monitoring system
+  event_id:
+    type: string
+    description: Event ID as passed from monitoring system
+    default: ''
+  alert_message:
+    type: string
+    description: Alert message as passed from monitoring system
+    default: ''
+  raw_payload:
+    type: string
+    description: Raw payload from monitoring event.  Used for ticket creation during escalation.
+    default: ''
